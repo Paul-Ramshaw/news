@@ -3,6 +3,7 @@ const app = express();
 const { getTopics } = require('./controllers/topics');
 const { getUsers } = require('./controllers/users');
 const { getArticle, patchArticle } = require('./controllers/articles');
+const { getCommentsByArticleId } = require('./controllers/comments');
 
 app.use(express.json());
 
@@ -11,6 +12,7 @@ app.get('/api/users', getUsers);
 
 app.get('/api/articles/:article_id', getArticle);
 app.patch('/api/articles/:article_id', patchArticle);
+app.get('/api/articles/:article_id/comments', getCommentsByArticleId);
 
 app.use('*', (req, res) => {
   res.status(404).send({ msg: 'Route not found' });
