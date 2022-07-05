@@ -165,12 +165,11 @@ describe('GET api/users', () => {
 });
 
 describe('GET /api/articles', () => {
-  test('200 status: returns an array of articles', () => {
+  test('200 status: returns an array of all articles', () => {
     return request(app)
       .get('/api/articles')
       .expect(200)
       .then(({ body: { articles } }) => {
-        console.log(articles);
         expect(articles).toHaveLength(12);
         articles.forEach((article) => {
           expect(article).toHaveProperty('author');
@@ -188,7 +187,6 @@ describe('GET /api/articles', () => {
       .get('/api/articles')
       .expect(200)
       .then(({ body: { articles } }) => {
-        console.log(articles);
         expect(articles).toBeSortedBy('created_at', {
           descending: true,
         });
