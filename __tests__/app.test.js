@@ -23,7 +23,7 @@ describe('Bad paths', () => {
   });
 });
 
-describe('Get /api/topics', () => {
+describe('GET /api/topics', () => {
   test('200 status: returns topics with slug and description properties', () => {
     return request(app)
       .get('/api/topics')
@@ -59,6 +59,7 @@ describe('GET /api/articles/:article_id', () => {
           body: 'some gifs',
           created_at: '2020-11-03T09:12:00.000Z',
           votes: 0,
+          comment_count: '2',
         });
       });
   });
