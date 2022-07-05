@@ -79,3 +79,19 @@ describe('GET /api/articles/:article_id', () => {
       });
   });
 });
+
+describe('GET api/users', () => {
+  test('200 status: returns an array of all users and each user has username, name and avatar_url properties', () => {
+    return request(app)
+      .get('/api/users')
+      .expect(200)
+      .then(({ body: { users } }) => {
+        expect(users).toHaveLength(4);
+        users.forEach((user) => {
+          expect(user).toHaveProperty('username');
+          expect(user).toHaveProperty('name');
+          expect(user).toHaveProperty('avatar_url');
+        });
+      });
+  });
+});
