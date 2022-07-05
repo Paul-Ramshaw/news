@@ -199,7 +199,6 @@ describe('GET /api/articles', () => {
       .get('/api/articles')
       .expect(200)
       .then(({ body: { articles } }) => {
-        console.log(articles);
         expect(articles[0]).toEqual({
           article_id: 3,
           title: 'Eight pug gifs that remind me of mitch',
