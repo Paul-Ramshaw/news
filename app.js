@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const { getTopics } = require('./controllers/topics');
 const { getUsers } = require('./controllers/users');
-const { getArticle } = require('./controllers/articles');
+const { getArticle, patchArticle } = require('./controllers/articles');
 
 app.use(express.json());
 
@@ -10,6 +10,7 @@ app.get('/api/topics', getTopics);
 app.get('/api/users', getUsers);
 
 app.get('/api/articles/:article_id', getArticle);
+app.patch('/api/articles/:article_id', patchArticle);
 
 app.use('*', (req, res) => {
   res.status(404).send({ msg: 'Route not found' });
@@ -17,13 +18,13 @@ app.use('*', (req, res) => {
 
 app.use((err, req, res, next) => {
   if (err.code === '22P02') {
-    res.status(400).send({ msg: 'Invalid request: ID must be a number' });
+    res.status(400).send({ msg: 'Invalid request' });
   } else next(err);
 });
 
 app.use((err, req, res, next) => {
   if (err.status && err.msg) {
-    res.status(404).send({ msg: err.msg });
+    res.status(err.status).send({ msg: err.msg });
   } else next(err);
 });
 
