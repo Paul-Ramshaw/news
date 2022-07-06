@@ -192,21 +192,74 @@ describe('GET /api/articles', () => {
         });
       });
   });
-  test('200 status: returns articles with correct property values', () => {
+  test('200 Status: accepts a sort_by query and responds with results sorted by that value, in descending order by default ', () => {
     return request(app)
-      .get('/api/articles')
+      .get('/api/articles?sort_by=votes')
       .expect(200)
       .then(({ body: { articles } }) => {
-        expect(articles[0]).toEqual({
-          article_id: 3,
-          title: 'Eight pug gifs that remind me of mitch',
-          topic: 'mitch',
-          author: 'icellusedkars',
-          body: 'some gifs',
-          created_at: '2020-11-03T09:12:00.000Z',
-          votes: 0,
-          comment_count: '2',
+        expect(articles).toBeSortedBy('votes', { descending: true });
+      });
+  });
+  test('200 Status: accepts an order_by query and responds with results in that order', () => {
+    return request(app)
+      .get('/api/articles?order_by=asc')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSortedBy('created_at');
+      });
+  });
+  test('200 Status: accepts a topic query and responds with results on that topic', () => {
+    return request(app)
+      .get('/api/articles?topic=cats')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toEqual([
+          {
+            article_id: 5,
+            title: 'UNCOVERED: catspiracy to bring down democracy',
+            topic: 'cats',
+            author: 'rogersop',
+            body: 'Bastet walks amongst us, and the cats are taking arms!',
+            created_at: '2020-08-03T13:14:00.000Z',
+            votes: 0,
+            comment_count: '2',
+          },
+        ]);
+      });
+  });
+  test('200 Status: accepts sort_by, order_by and topic queries in a single request and responds with results sorted, ordered and filtered', () => {
+    return request(app)
+      .get('/api/articles?sort_by=article_id&order_by=asc&topic=mitch')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSortedBy('article_id');
+        articles.forEach((article) => {
+          expect(article.topic).toBe('mitch');
         });
+      });
+  });
+  test('400 status: responds with an error message if given an invalid sort_by query', () => {
+    return request(app)
+      .get('/api/articles?sort_by=invalidsort')
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Invalid request');
+      });
+  });
+  test('400 status: responds with an error message if given an invalid order_by query', () => {
+    return request(app)
+      .get('/api/articles?sort_by=invalidorder')
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Invalid request');
+      });
+  });
+  test('400 status: responds with an error message if given an invalid topic query', () => {
+    return request(app)
+      .get('/api/articles?topic=invalidtopic')
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Invalid request');
       });
   });
 });
