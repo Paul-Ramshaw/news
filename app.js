@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const { getTopics } = require('./controllers/topics');
 const { getUsers } = require('./controllers/users');
+const { getCommentsByArticleId } = require('./controllers/comments');
 const {
   getArticle,
   getArticles,
@@ -15,6 +16,7 @@ app.get('/api/users', getUsers);
 app.get('/api/articles', getArticles);
 app.get('/api/articles/:article_id', getArticle);
 app.patch('/api/articles/:article_id', patchArticle);
+app.get('/api/articles/:article_id/comments', getCommentsByArticleId);
 
 app.use('*', (req, res) => {
   res.status(404).send({ msg: 'Route not found' });

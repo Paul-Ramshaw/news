@@ -210,3 +210,45 @@ describe('GET /api/articles', () => {
       });
   });
 });
+
+describe('GET /api/articles/:article_id/comments', () => {
+  test('200 status: responds with an array of comments matching an article id.', () => {
+    return request(app)
+      .get('/api/articles/3/comments')
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toHaveLength(2);
+        comments.forEach((comment) => {
+          expect(comment).toHaveProperty('comment_id');
+          expect(comment).toHaveProperty('votes');
+          expect(comment).toHaveProperty('created_at');
+          expect(comment).toHaveProperty('author');
+          expect(comment).toHaveProperty('body');
+        });
+      });
+  });
+  test('200 status: responds with an empty array when an article exists but has no comments', () => {
+    return request(app)
+      .get('/api/articles/12/comments')
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toEqual([]);
+      });
+  });
+  test('404 status: responds with an error message if the article ID does not exist', () => {
+    return request(app)
+      .get('/api/articles/1000/comments')
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('The article does not exist');
+      });
+  });
+  test('400 status: responds with an error message if given an invalid article ID type', () => {
+    return request(app)
+      .get('/api/articles/words/comments')
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Invalid request');
+     });
+  });
+});
