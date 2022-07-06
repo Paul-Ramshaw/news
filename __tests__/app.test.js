@@ -3,6 +3,7 @@ const testData = require('../db/data/test-data');
 const db = require('../db');
 const request = require('supertest');
 const app = require('../app.js');
+const sorted = require('jest-sorted');
 
 beforeEach(() => {
   return seed(testData);
@@ -163,6 +164,53 @@ describe('GET api/users', () => {
   });
 });
 
+describe('GET /api/articles', () => {
+  test('200 status: returns an array of all articles', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toHaveLength(12);
+        articles.forEach((article) => {
+          expect(article).toHaveProperty('author');
+          expect(article).toHaveProperty('title');
+          expect(article).toHaveProperty('article_id');
+          expect(article).toHaveProperty('topic');
+          expect(article).toHaveProperty('created_at');
+          expect(article).toHaveProperty('votes');
+          expect(article).toHaveProperty('comment_count');
+        });
+      });
+  });
+  test('200 status: articles array is sorted by created_at date in descending order by default', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSortedBy('created_at', {
+          descending: true,
+        });
+      });
+  });
+  test('200 status: returns articles with correct property values', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles[0]).toEqual({
+          article_id: 3,
+          title: 'Eight pug gifs that remind me of mitch',
+          topic: 'mitch',
+          author: 'icellusedkars',
+          body: 'some gifs',
+          created_at: '2020-11-03T09:12:00.000Z',
+          votes: 0,
+          comment_count: '2',
+        });
+      });
+  });
+});
+
 describe('GET /api/articles/:article_id/comments', () => {
   test('200 status: responds with an array of comments matching an article id.', () => {
     return request(app)
@@ -201,6 +249,6 @@ describe('GET /api/articles/:article_id/comments', () => {
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe('Invalid request');
-      });
+     });
   });
 });
