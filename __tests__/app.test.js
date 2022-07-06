@@ -271,23 +271,6 @@ describe('POST: /api/articles/:article_id/comments', () => {
         expect(comment).toHaveProperty('body');
       });
   });
-  test('POST 201: responds with a comment with the correct property values', () => {
-    const comment = {
-      username: 'icellusedkars',
-      body: 'Love this',
-    };
-    return request(app)
-      .post('/api/articles/3/comments')
-      .send(comment)
-      .expect(201)
-      .then(({ body: { comment } }) => {
-        expect(comment.comment_id).toBe(19);
-        expect(comment.body).toBe('Love this');
-        expect(comment.article_id).toBe(3);
-        expect(comment.author).toBe('icellusedkars');
-        expect(comment.votes).toBe(0);
-      });
-  });
   test('404 status: responds with an error message if the article ID does not exist', () => {
     const comment = {
       username: 'icellusedkars',
@@ -336,6 +319,16 @@ describe('POST: /api/articles/:article_id/comments', () => {
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe('Invalid request: comment body required');
+      });
+  });
+  test('400 status: responds with an error message if post body is not provided', () => {
+    const comment = {};
+    return request(app)
+      .post('/api/articles/3/comments')
+      .send(comment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Invalid request');
       });
   });
 });

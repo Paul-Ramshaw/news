@@ -20,11 +20,15 @@ exports.postComment = async (req, res, next) => {
     const { username } = req.body;
     const newComment = req.body;
 
-    await checkArticleExists(article_id);
-    await checkUserExists(username);
+    if (Object.keys(newComment).length) {
+      await checkUserExists(username);
+      await checkArticleExists(article_id);
+    }
+
     const comment = await addComment(article_id, newComment);
     res.status(201).send({ comment });
   } catch (err) {
+    console.log(err);
     next(err);
   }
 };

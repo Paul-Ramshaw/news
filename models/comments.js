@@ -17,6 +17,20 @@ exports.selectComments = (article_id) => {
 exports.addComment = (article_id, comment) => {
   const { username, body } = comment;
 
+  if (Object.keys(comment).length === 0) {
+    return Promise.reject({
+      status: 400,
+      msg: 'Invalid request',
+    });
+  }
+
+  if (!username) {
+    return Promise.reject({
+      status: 400,
+      msg: 'Invalid request: username required',
+    });
+  }
+
   if (!body) {
     return Promise.reject({
       status: 400,
