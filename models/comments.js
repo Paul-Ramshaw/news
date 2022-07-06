@@ -14,21 +14,28 @@ exports.selectComments = (article_id) => {
     });
 };
 
-exports.checkArticleExists = (article_id) => {
+exports.addComment = (article_id, comment) => {
+  const { username, body } = comment;
+
+  if (!body) {
+    return Promise.reject({
+      status: 400,
+      msg: 'Invalid request: comment body required',
+    });
+  }
+
   return db
     .query(
       `
-        SELECT * 
-        FROM articles 
-        WHERE article_id = $1`,
-      [article_id]
+        INSERT INTO comments
+        (body, votes, author, article_id)
+        VALUES
+        ($1, 0, $2, $3)
+        RETURNING *;
+        `,
+      [body, username, article_id]
     )
     .then(({ rows }) => {
-      if (!rows[0]) {
-        return Promise.reject({
-          status: 404,
-          msg: 'The article does not exist',
-        });
-      }
+      return rows[0];
     });
 };

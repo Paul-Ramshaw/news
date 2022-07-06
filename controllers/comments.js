@@ -1,5 +1,7 @@
 const db = require('../db');
-const { selectComments, checkArticleExists } = require('../models/comments');
+const { selectComments, addComment } = require('../models/comments');
+const { checkArticleExists } = require('../models/articles');
+const { checkUserExists } = require('../models/users');
 
 exports.getCommentsByArticleId = async (req, res, next) => {
   try {
@@ -7,6 +9,21 @@ exports.getCommentsByArticleId = async (req, res, next) => {
     const comments = await selectComments(article_id);
     await checkArticleExists(article_id);
     res.status(200).send({ comments });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.postComment = async (req, res, next) => {
+  try {
+    const { article_id } = req.params;
+    const { username } = req.body;
+    const newComment = req.body;
+
+    await checkArticleExists(article_id);
+    await checkUserExists(username);
+    const comment = await addComment(article_id, newComment);
+    res.status(201).send({ comment });
   } catch (err) {
     next(err);
   }
