@@ -1,6 +1,6 @@
 const seed = require('../db/seeds/seed.js');
 const testData = require('../db/data/test-data');
-const db = require('../db');
+const db = require('../db/connection');
 const request = require('supertest');
 const app = require('../app.js');
 const sorted = require('jest-sorted');

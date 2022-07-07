@@ -1,4 +1,4 @@
-const db = require('../db/index');
+const db = require('../db/connection');
 
 exports.selectComments = (article_id) => {
   return db
