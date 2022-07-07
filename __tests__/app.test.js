@@ -4,6 +4,7 @@ const db = require('../db');
 const request = require('supertest');
 const app = require('../app.js');
 const sorted = require('jest-sorted');
+const endpoints = require('../endpoints.json');
 
 beforeEach(() => {
   return seed(testData);
@@ -330,6 +331,17 @@ describe('POST: /api/articles/:article_id/comments', () => {
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe('Invalid request');
+      });
+  });
+});
+
+describe('GET /api', () => {
+  test('200 status: responds with information about each endpoint', () => {
+    return request(app)
+      .get('/api')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual(endpoints);
       });
   });
 });
