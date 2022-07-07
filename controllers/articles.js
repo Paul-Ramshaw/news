@@ -3,6 +3,7 @@ const {
   selectArticles,
   updateArticle,
 } = require('../models/articles');
+const { checkTopicExists } = require('../models/topics');
 
 exports.getArticle = (req, res, next) => {
   const { article_id } = req.params;
@@ -29,14 +30,13 @@ exports.patchArticle = (req, res, next) => {
     });
 };
 
-exports.getArticles = (req, res, next) => {
-  const { sort_by, order_by, topic } = req.query;
-
-  selectArticles(sort_by, order_by, topic)
-    .then((articles) => {
-      res.status(200).send({ articles });
-    })
-    .catch((err) => {
-      next(err);
-    });
+exports.getArticles = async (req, res, next) => {
+  try {
+    const { sort_by, order_by, topic } = req.query;
+    await checkTopicExists(topic);
+    const articles = await selectArticles(sort_by, order_by, topic);
+    res.status(200).send({ articles });
+  } catch (err) {
+    next(err);
+  }
 };

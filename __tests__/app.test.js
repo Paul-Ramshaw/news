@@ -192,7 +192,7 @@ describe('GET /api/articles', () => {
         });
       });
   });
-  test('200 Status: accepts a sort_by query and responds with results sorted by that value, in descending order by default ', () => {
+  test('200 status: accepts a sort_by query and responds with results sorted by that value, in descending order by default ', () => {
     return request(app)
       .get('/api/articles?sort_by=votes')
       .expect(200)
@@ -200,7 +200,7 @@ describe('GET /api/articles', () => {
         expect(articles).toBeSortedBy('votes', { descending: true });
       });
   });
-  test('200 Status: accepts an order_by query and responds with results in that order', () => {
+  test('200 status: accepts an order_by query and responds with results in that order', () => {
     return request(app)
       .get('/api/articles?order_by=asc')
       .expect(200)
@@ -208,7 +208,7 @@ describe('GET /api/articles', () => {
         expect(articles).toBeSortedBy('created_at');
       });
   });
-  test('200 Status: accepts a topic query and responds with results on that topic', () => {
+  test('200 status: accepts a topic query and responds with results on that topic', () => {
     return request(app)
       .get('/api/articles?topic=cats')
       .expect(200)
@@ -248,18 +248,26 @@ describe('GET /api/articles', () => {
   });
   test('400 status: responds with an error message if given an invalid order_by query', () => {
     return request(app)
-      .get('/api/articles?sort_by=invalidorder')
+      .get('/api/articles?order_by=invalidorder')
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe('Invalid request');
       });
   });
-  test('400 status: responds with an error message if given an invalid topic query', () => {
+  test('404 status: responds with an error message if topic is not found', () => {
     return request(app)
-      .get('/api/articles?topic=invalidtopic')
-      .expect(400)
+      .get('/api/articles?topic=notatopic')
+      .expect(404)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe('Invalid request');
+        expect(msg).toBe('Topic not found');
+      });
+  });
+  test('200 status: responds with an empty array if topic exists but has no matching articles', () => {
+    return request(app)
+      .get('/api/articles?topic=paper')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toEqual([]);
       });
   });
 });
@@ -307,7 +315,7 @@ describe('GET /api/articles/:article_id/comments', () => {
 });
 
 describe('POST: /api/articles/:article_id/comments', () => {
-  test('POST 201: adds a new comment to the database and returns the newly added comment', () => {
+  test('201 status: adds a new comment to the database and returns the newly added comment', () => {
     const comment = {
       username: 'icellusedkars',
       body: 'Love this',
