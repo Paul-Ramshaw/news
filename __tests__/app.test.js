@@ -4,6 +4,7 @@ const db = require('../db');
 const request = require('supertest');
 const app = require('../app.js');
 const sorted = require('jest-sorted');
+const endpoints = require('../endpoints.json');
 
 beforeEach(() => {
   return seed(testData);
@@ -176,6 +177,7 @@ describe('GET /api/articles', () => {
           expect(article).toHaveProperty('title');
           expect(article).toHaveProperty('article_id');
           expect(article).toHaveProperty('topic');
+          expect(article).toHaveProperty('body');
           expect(article).toHaveProperty('created_at');
           expect(article).toHaveProperty('votes');
           expect(article).toHaveProperty('comment_count');
@@ -419,6 +421,17 @@ describe('DELETE /api/comments/:comment_id', () => {
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe('Invalid request');
+      });
+  });
+});
+
+describe('GET /api', () => {
+  test('200 status: responds with information about each endpoint', () => {
+    return request(app)
+      .get('/api')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual(endpoints);
       });
   });
 });
