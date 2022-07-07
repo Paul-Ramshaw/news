@@ -393,3 +393,32 @@ describe('POST: /api/articles/:article_id/comments', () => {
       });
   });
 });
+
+describe('DELETE /api/comments/:comment_id', () => {
+  test('204 status: deletes comment when given a comment_id', () => {
+    return request(app)
+      .delete('/api/comments/2')
+      .expect(204)
+      .then(() => {
+        return db.query('SELECT * FROM comments;').then(({ rows }) => {
+          expect(rows.length).toBe(17);
+        });
+      });
+  });
+  test('404 status: responds with an error msg if the comment does not exist', () => {
+    return request(app)
+      .delete('/api/comments/1000')
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('The comment ID does not exist');
+      });
+  });
+  test('400 status: responds with an error msg if the comment ID is not a number', () => {
+    return request(app)
+      .delete('/api/comments/words')
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Invalid request');
+      });
+  });
+});
