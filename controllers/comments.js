@@ -1,5 +1,9 @@
 const db = require('../db');
-const { selectComments, addComment } = require('../models/comments');
+const {
+  selectComments,
+  addComment,
+  removeComment,
+} = require('../models/comments');
 const { checkArticleExists } = require('../models/articles');
 const { checkUserExists } = require('../models/users');
 
@@ -27,6 +31,16 @@ exports.postComment = async (req, res, next) => {
 
     const comment = await addComment(article_id, newComment);
     res.status(201).send({ comment });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.deleteComment = async (req, res, next) => {
+  try {
+    const { comment_id } = req.params;
+    await removeComment(comment_id);
+    res.status(204).send();
   } catch (err) {
     next(err);
   }
