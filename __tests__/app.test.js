@@ -176,6 +176,7 @@ describe('GET /api/articles', () => {
           expect(article).toHaveProperty('title');
           expect(article).toHaveProperty('article_id');
           expect(article).toHaveProperty('topic');
+          expect(article).toHaveProperty('body');
           expect(article).toHaveProperty('created_at');
           expect(article).toHaveProperty('votes');
           expect(article).toHaveProperty('comment_count');
@@ -254,7 +255,7 @@ describe('GET /api/articles/:article_id/comments', () => {
 });
 
 describe('POST: /api/articles/:article_id/comments', () => {
-  test('POST 201: adds a new comment to the database and returns the newly added comment', () => {
+  test('201 status: adds a new comment to the database and returns the newly added comment', () => {
     const comment = {
       username: 'icellusedkars',
       body: 'Love this',
