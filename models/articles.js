@@ -35,7 +35,7 @@ exports.updateArticle = (article_id, inc_votes) => {
     UPDATE articles
     SET votes = votes + $1
     WHERE article_id = $2
-    RETURNING *
+    RETURNING *;
     `,
       [inc_votes, article_id]
     )
@@ -100,7 +100,7 @@ exports.checkArticleExists = (article_id) => {
       `
         SELECT * 
         FROM articles 
-        WHERE article_id = $1`,
+        WHERE article_id = $1;`,
       [article_id]
     )
     .then(({ rows }) => {

@@ -5,7 +5,7 @@ exports.selectComments = (article_id) => {
     .query(
       `SELECT *
         FROM comments 
-        WHERE comments.article_id = $1
+        WHERE comments.article_id = $1;
           `,
       [article_id]
     )
@@ -56,7 +56,7 @@ exports.addComment = (article_id, comment) => {
 
 exports.removeComment = (comment_id) => {
   return db
-    .query('DELETE FROM comments WHERE comment_id = $1 RETURNING *', [
+    .query('DELETE FROM comments WHERE comment_id = $1 RETURNING *;', [
       comment_id,
     ])
     .then(({ rows }) => {
