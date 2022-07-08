@@ -165,6 +165,27 @@ describe('GET api/users', () => {
   });
 });
 
+describe('GET /api/users/:username', () => {
+  test('200 status: responds with a single matching user', () => {
+    return request(app)
+      .get('/api/users/icellusedkars')
+      .expect(200)
+      .then(({ body: { user } }) => {
+        expect(user).toHaveProperty('username');
+        expect(user).toHaveProperty('name');
+        expect(user).toHaveProperty('avatar_url');
+      });
+  });
+  test('404 status: responds with an error message if the user does not exist', () => {
+    return request(app)
+      .get('/api/users/doesnotexist')
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('The user does not exist');
+      });
+  });
+});
+
 describe('GET /api/articles', () => {
   test('200 status: returns an array of all articles', () => {
     return request(app)
