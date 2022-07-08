@@ -40,10 +40,12 @@ $ npm run setup-dbs
 $ npm run seed
 ```
 
-6. Once your initial setup is done, you can run tests with
+## Running Tests
+
+The application has been built using test driven development and integration testing has been carried out for each of the API endpoints. To run those tests, from the root directory of the project, use:
 
 ```
-$ npm test
+npm test
 ```
 
 ## Adding Environment Variables
